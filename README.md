@@ -1,33 +1,34 @@
 # Interactive Invite Template 💌
 
-A small interactive invitation page with:
-- Secret code unlock modal (case-insensitive)
-- Countdown timer
-- Floating hearts + confetti
-- Runaway "NO" button
-- Copy confirmation message
-- Add-to-calendar (.ics) download
-- Optional "Share to Telegram" button
-- Optional QR block (auto points to the current page URL)
+![Screenshot](screenshot.png)
+![Screenshot](screenshot2.png)
 
-## Quick start
+A single-file, customizable, interactive invitation page with:
+- 🔐 “Unlock” modal (secret code)
+- 💘 Floating hearts + confetti
+- 📅 Downloadable calendar invite (.ics)
+- 📍 Google Maps link
+- 📱 Optional QR block + Telegram share button
 
-1) Copy `config.example.json` to `config.json` and edit it:
-- names / date / time / location
-- secret code + hint
-- plan items
+## Live Demo
+https://hossein70s.github.io/interactive-invite-template/
 
-2) Open `index.html` in a browser (local preview):
-- Double click `index.html`
+## How to use
 
-> Note: Some browsers may block clipboard features on `file://`.
-> For the best experience, host it (Netlify / GitHub Pages).
+1) Copy the example config:
+- Duplicate `config.example.json` → rename it to `config.json`
 
-## Deploy (Netlify Drop)
+2) Edit `config.json` with your own details:
+- names, date/time, location, secret code, plan, etc.
 
-- Drag & drop the whole folder (with `index.html` + `config.json`) into Netlify Drop.
-- Open the deployed URL and share it.
+3) Run locally
+Open `index.html` with a local server (recommended):
+- VS Code: install **Live Server** → right click `index.html` → **Open with Live Server**
 
-## Privacy
-Do NOT commit personal information. Keep `config.json` private if it contains real names/locations.
-Use `config.example.json` for the public repo.
+## Deploy
+You can deploy using **GitHub Pages**:
+- Settings → Pages → Deploy from branch → `main` → `/ (root)` → Save
+
+## Notes
+- `config.json` is personal. Keep it out of git if you want (add it to `.gitignore`).
+- `public_url_for_qr` should be the final deployed URL so the QR points to the correct site.
