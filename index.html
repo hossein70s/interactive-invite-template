@@ -1,0 +1,556 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Invite 💌</title>
+  <style>
+    :root{
+      --bg1:#070712; --bg2:#140a14;
+      --card:rgba(255,255,255,.08); --card2:rgba(255,255,255,.12);
+      --text:rgba(255,255,255,.92); --muted:rgba(255,255,255,.72);
+      --accent:#ff4d6d; --accent2:#ff9aa2; --ok:#3ddc97;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; min-height:100vh;
+      font-family:system-ui, -apple-system, "Segoe UI", Arial;
+      color:var(--text);
+      background:
+        radial-gradient(1200px 700px at 20% 10%, #2a1230 0%, transparent 55%),
+        radial-gradient(1000px 600px at 90% 20%, #20124d 0%, transparent 50%),
+        linear-gradient(135deg,var(--bg1),var(--bg2));
+      overflow-x:hidden;
+    }
+    .wrap{max-width:980px;margin:0 auto;padding:28px 16px 64px}
+    .top{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+    .badge{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:10px 14px;border-radius:999px;
+      border:1px solid rgba(255,255,255,.18);
+      background:rgba(255,255,255,.06);
+      backdrop-filter:blur(10px);
+      box-shadow:0 10px 30px rgba(0,0,0,.25);
+      font-size:14px;color:var(--muted)
+    }
+    .badge b{color:var(--text)}
+    .hero{
+      border:1px solid rgba(255,255,255,.16);
+      background:linear-gradient(180deg,var(--card),rgba(255,255,255,.04));
+      border-radius:22px;padding:22px;
+      box-shadow:0 25px 60px rgba(0,0,0,.35);
+      position:relative;overflow:hidden
+    }
+    .glow{
+      position:absolute;inset:-120px -80px auto auto;
+      width:360px;height:360px;
+      background:radial-gradient(circle at 30% 30%, rgba(255,77,109,.30), transparent 55%);
+      filter:blur(12px);transform:rotate(16deg);pointer-events:none
+    }
+    h1{margin:6px 0 8px;font-size:clamp(26px,4vw,42px);line-height:1.2}
+    .sub{margin:0 0 14px;color:var(--muted);font-size:15px;line-height:1.8}
+    .type{
+      padding:14px 16px;border-radius:16px;background:rgba(0,0,0,.25);
+      border:1px solid rgba(255,255,255,.14);
+      min-height:78px;font-size:16px;line-height:1.9
+    }
+    .countdown{margin-top:10px;font-size:14px;color:rgba(255,255,255,.82)}
+    .countdown b{color:var(--text)}
+    .row{display:grid;grid-template-columns:1.3fr .7fr;gap:14px;margin-top:16px}
+    @media(max-width:860px){.row{grid-template-columns:1fr}}
+    .card{
+      border:1px solid rgba(255,255,255,.14);
+      background:linear-gradient(180deg,var(--card2),rgba(255,255,255,.05));
+      border-radius:20px;padding:16px;
+      box-shadow:0 20px 50px rgba(0,0,0,.28);
+      backdrop-filter:blur(10px)
+    }
+    .card h2{margin:2px 0 10px;font-size:16px}
+    .kv{display:grid;grid-template-columns:120px 1fr;gap:10px 12px;font-size:14px;color:rgba(255,255,255,.86)}
+    .k{color:rgba(255,255,255,.65)}
+    a{color:var(--accent2);text-decoration:none;border-bottom:1px dashed rgba(255,154,162,.55)}
+    .actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+    button{
+      border:0;border-radius:14px;padding:12px 14px;font-size:14px;cursor:pointer;
+      transition:transform .12s ease, opacity .12s ease;user-select:none
+    }
+    button:active{transform:scale(.98)}
+    .btn{background:rgba(255,255,255,.10);color:rgba(255,255,255,.92);border:1px solid rgba(255,255,255,.16)}
+    .btn-accent{
+      background:linear-gradient(135deg, rgba(255,77,109,.95), rgba(255,154,162,.85));
+      color:#0b0710;font-weight:900;border:1px solid rgba(255,255,255,.15)
+    }
+    .btn-ok{
+      background:linear-gradient(135deg, rgba(61,220,151,.95), rgba(155,255,214,.82));
+      color:#06100b;font-weight:900
+    }
+    .hidden{display:none!important}
+
+    /* Modal */
+    .modal-backdrop{
+      position:fixed;inset:0;background:rgba(0,0,0,.55);
+      display:flex;align-items:center;justify-content:center;padding:18px;z-index:50
+    }
+    .modal{
+      width:min(560px,100%);border-radius:20px;border:1px solid rgba(255,255,255,.16);
+      background:linear-gradient(180deg, rgba(30,18,40,.92), rgba(10,10,20,.88));
+      box-shadow:0 30px 80px rgba(0,0,0,.55);padding:18px;position:relative;overflow:hidden
+    }
+    .modal p{margin:0 0 12px;color:var(--muted);line-height:1.8;font-size:14px}
+    .inp{display:flex;gap:10px;align-items:center;margin-top:10px}
+    input{
+      flex:1;padding:12px 14px;border-radius:14px;border:1px solid rgba(255,255,255,.14);
+      background:rgba(0,0,0,.25);color:var(--text);outline:none;font-size:14px
+    }
+    .err{margin-top:10px;color:#ffd1d6;font-size:13px;opacity:0;transition:opacity .2s ease}
+    .err.show{opacity:1}
+
+    /* Hearts */
+    .heart{
+      position:fixed;left:50%;top:105%;width:14px;height:14px;
+      transform:translateX(-50%) rotate(45deg);
+      background:rgba(255,77,109,.75);
+      z-index:1;pointer-events:none;
+      filter:drop-shadow(0 8px 10px rgba(0,0,0,.35));
+      animation:floatUp linear forwards
+    }
+    .heart:before,.heart:after{content:"";position:absolute;width:14px;height:14px;background:inherit;border-radius:50%}
+    .heart:before{left:-7px;top:0} .heart:after{left:0;top:-7px}
+    @keyframes floatUp{
+      from{transform:translateX(-50%) rotate(45deg) translateY(0);opacity:.95}
+      to{transform:translateX(calc(-50% + var(--dx))) rotate(45deg) translateY(calc(-110vh));opacity:0}
+    }
+
+    /* Confetti */
+    .conf{
+      position:fixed;top:-10px;left:0;width:10px;height:14px;z-index:80;pointer-events:none;
+      transform:rotate(var(--r)); background:hsl(var(--h), 90%, 65%);
+      animation:confFall linear forwards
+    }
+    @keyframes confFall{
+      to{transform:translate(var(--x), 110vh) rotate(calc(var(--r) + 360deg));opacity:0}
+    }
+
+    /* Runaway NO */
+    .runaway-wrap{position:relative;min-height:54px;flex:1;min-width:170px}
+    .btn-no{position:absolute;right:0;top:0}
+
+    .toast{
+      position:fixed;bottom:18px;left:18px;right:18px;margin:0 auto;max-width:560px;
+      padding:12px 14px;border-radius:16px;background:rgba(0,0,0,.55);
+      border:1px solid rgba(255,255,255,.14);backdrop-filter:blur(10px);
+      box-shadow:0 20px 50px rgba(0,0,0,.35);
+      opacity:0;transform:translateY(10px);
+      transition:opacity .2s ease, transform .2s ease;z-index:100;font-size:14px
+    }
+    .toast.show{opacity:1;transform:translateY(0)}
+
+    .pill{
+      display:inline-flex;gap:8px;align-items:center;
+      padding:8px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.14);
+      background:rgba(255,255,255,.06); color:rgba(255,255,255,.85); font-size:13px;
+      margin-top:10px
+    }
+
+    /* QR block */
+    .qrbox{
+      margin-top:16px;
+      display:flex;gap:14px;align-items:center;flex-wrap:wrap;
+      padding:14px;border-radius:18px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(255,255,255,.06)
+    }
+    .qrimg{
+      width:240px;border-radius:18px;border:1px solid rgba(255,255,255,.14)
+    }
+    .qrlogo{
+      position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+      pointer-events:none
+    }
+    .qrlogo > div{
+      width:56px;height:56px;border-radius:18px;
+      background:rgba(15,10,20,.85);
+      border:1px solid rgba(255,255,255,.18);
+      display:flex;align-items:center;justify-content:center;
+      font-size:26px
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <div class="badge">💌 <b>Invite</b> • interactive template</div>
+      <div class="badge">For: <b id="forName"></b> (<span id="forNick"></span>)</div>
+      <div class="badge">Place: <b id="placeName"></b></div>
+    </div>
+
+    <div class="hero">
+      <div class="glow"></div>
+      <h1 id="title"></h1>
+      <p class="sub" id="subtitle"></p>
+
+      <div id="type" class="type"></div>
+      <div class="countdown">Countdown: <b id="cd">...</b></div>
+
+      <div class="actions">
+        <button class="btn-accent" id="openModal">Unlock 🔐</button>
+        <button class="btn" id="spawnHearts">More hearts 💘</button>
+      </div>
+
+      <div class="qrbox hidden" id="qrBox">
+        <div style="flex:1;min-width:220px">
+          <div style="font-weight:900;font-size:14px;margin-bottom:6px">Scan to open</div>
+          <div style="color:rgba(255,255,255,.75);font-size:13px;line-height:1.7">
+            Fast access via QR.<br/>
+            <b>Unlock code:</b> <span id="qrCodeText"></span>
+          </div>
+        </div>
+
+        <div style="position:relative">
+          <img id="qrImg" class="qrimg" alt="QR"/>
+          <div class="qrlogo"><div>💌</div></div>
+        </div>
+      </div>
+
+      <div class="pill">Dress code: <b style="margin-left:6px" id="dress"></b></div>
+    </div>
+
+    <div class="row hidden" id="reveal">
+      <div class="card">
+        <h2>Details ✨</h2>
+        <div class="kv">
+          <div class="k">Date</div><div><span id="dateLbl"></span> <span style="color:rgba(255,255,255,.6)" id="dateG"></span></div>
+          <div class="k">Start</div><div id="startT"></div>
+          <div class="k">End</div><div id="endT"></div>
+          <div class="k">Location</div><div><b id="locName"></b> — <span id="addr"></span></div>
+          <div class="k">Map</div><div><a id="mapA" target="_blank" rel="noreferrer">Open in Google Maps</a></div>
+        </div>
+
+        <h2 style="margin-top:14px">Plan 🗓️</h2>
+        <ul id="planUl"></ul>
+
+        <div class="actions" style="margin-top:16px">
+          <button class="btn-ok" id="yesBtn">YES ❤️</button>
+
+          <div class="runaway-wrap">
+            <button class="btn btn-no" id="noBtn">NO 😐</button>
+          </div>
+
+          <button class="btn" id="addCal">Add to Calendar 📅</button>
+          <button class="btn" id="copyMsg">Copy confirmation ✅</button>
+          <button class="btn hidden" id="shareTg">Share to Telegram ✈️</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 id="fromTitle"></h2>
+        <p class="sub" style="margin:0" id="fromText"></p>
+        <div class="actions" style="margin-top:14px">
+          <button class="btn" id="moreHearts">Heart rain 💘</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal-backdrop hidden" id="modalWrap">
+    <div class="modal">
+      <h3 style="margin:4px 0 8px">Secret Code 🔐</h3>
+      <p>Case-insensitive. Hint appears after 2 failed attempts.</p>
+      <div class="inp">
+        <input id="codeInput" placeholder="e.g. LOVE2026" autocomplete="off"/>
+        <button class="btn-accent" id="unlock">Unlock</button>
+      </div>
+      <div id="err" class="err">Wrong code… try again 😏</div>
+      <div class="actions" style="margin-top:12px">
+        <button class="btn" id="closeModal">Not yet</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+<script>
+  // ✅ Simple, no-config version (always works offline)
+  const CFG = {
+    partner_fullname: "Partner Name",
+    partner_nickname: "My Valentine ❤️",
+    your_name: "Your Name",
+
+    date_label: "A Special Day",
+    date_gregorian: "2026-02-14",
+    start_time: "19:30",
+    end_time: "22:30",
+
+    location_name: "A Special Place",
+    address: "City, Neighborhood, Landmark",
+
+    secret_code: "LOVE2026",
+    hint_after_two_fails: "Try something meaningful 😉",
+
+    dress_code: "Anything — with a tiny touch of red 😉",
+
+    plan: [
+      "19:30 — Meet & a tiny surprise 🎁",
+      "20:00 — Coffee / dinner 🍽️",
+      "21:15 — Walk & photos 📸",
+      "22:00 — Dessert 🍰"
+    ],
+
+    accept_text: "YES ❤️ I’m in!",
+
+    show_qr_block: true,
+    enable_share_to_telegram: true
+  };
+
+  function buildGoogleMapsUrl(location_name, address) {
+    const q = encodeURIComponent(`${location_name} ${address}`.trim());
+    return `https://www.google.com/maps/search/?api=1&query=${q}`;
+  }
+
+  CFG.google_maps_url = buildGoogleMapsUrl(CFG.location_name, CFG.address);
+
+  // Fill UI
+  document.getElementById("forName").textContent = CFG.partner_fullname;
+  document.getElementById("forNick").textContent = CFG.partner_nickname;
+  document.getElementById("placeName").textContent = CFG.location_name;
+
+  document.getElementById("title").textContent = `Hey ${CFG.partner_nickname}… I made you something secret 💌`;
+  document.getElementById("subtitle").innerHTML =
+    `Not a normal invite. A locked one.<br/>Enter the secret code to reveal the plan 😏`;
+
+  document.getElementById("dress").textContent = CFG.dress_code;
+
+  document.getElementById("dateLbl").textContent = CFG.date_label;
+  document.getElementById("dateG").textContent = `(${CFG.date_gregorian})`;
+  document.getElementById("startT").textContent = CFG.start_time;
+  document.getElementById("endT").textContent = CFG.end_time;
+  document.getElementById("locName").textContent = CFG.location_name;
+  document.getElementById("addr").textContent = CFG.address;
+
+  const mapA = document.getElementById("mapA");
+  mapA.href = CFG.google_maps_url;
+
+  const planUl = document.getElementById("planUl");
+  planUl.innerHTML = "";
+  CFG.plan.forEach(item => {
+    const li = document.createElement("li");
+    li.textContent = item;
+    planUl.appendChild(li);
+  });
+
+  document.getElementById("fromTitle").textContent = `From ${CFG.your_name}`;
+  document.getElementById("fromText").innerHTML =
+    `A playful little plan, made with care.<br/>
+     Unlock it, say YES, and I’ll handle the rest 😉`;
+
+  // Toast
+  function toast(msg) {
+    const t = document.getElementById("toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    setTimeout(()=>t.classList.remove("show"), 1900);
+  }
+
+  // Typewriter
+  const typeEl = document.getElementById("type");
+  const text = `Hi ${CFG.partner_fullname} ✨
+This is your invitation protocol:
+1) Unlock it.
+2) Say YES.
+3) Show up… and let me surprise you 😉`;
+
+  let i = 0;
+  function typeIt() {
+    if (i <= text.length) {
+      typeEl.textContent = text.slice(0, i);
+      i++;
+      requestAnimationFrame(typeIt);
+    }
+  }
+  typeIt();
+
+  // Hearts
+  function spawnHeart(count=1) {
+    for (let c=0; c<count; c++) {
+      const h = document.createElement("div");
+      h.className = "heart";
+      const left = Math.random() * 100;
+      const size = 10 + Math.random() * 18;
+      const dur = 2.8 + Math.random() * 2.2;
+      const dx = (-60 + Math.random() * 120).toFixed(0) + "px";
+      h.style.left = left + "%";
+      h.style.width = size + "px";
+      h.style.height = size + "px";
+      h.style.animationDuration = dur + "s";
+      h.style.setProperty("--dx", dx);
+      h.style.opacity = (0.55 + Math.random() * 0.4).toFixed(2);
+      document.body.appendChild(h);
+      setTimeout(()=>h.remove(), (dur*1000)+200);
+    }
+  }
+  document.getElementById("spawnHearts").addEventListener("click", ()=>spawnHeart(10));
+  document.getElementById("moreHearts").addEventListener("click", ()=>spawnHeart(18));
+  setInterval(()=>spawnHeart(1), 950);
+
+  // Confetti
+  function confetti(n=90) {
+    for(let i=0;i<n;i++) {
+      const d = document.createElement("div");
+      d.className = "conf";
+      d.style.setProperty("--h", String(Math.floor(Math.random()*360)));
+      d.style.setProperty("--r", (Math.random()*180)+"deg");
+      d.style.setProperty("--x", (Math.random()*120-60)+"vw");
+      d.style.left = (Math.random()*100)+"vw";
+      const dur = 2.2 + Math.random()*1.6;
+      d.style.animationDuration = dur+"s";
+      document.body.appendChild(d);
+      setTimeout(()=>d.remove(), dur*1000+200);
+    }
+  }
+
+  // Countdown
+  function parseDT(dateStr, timeStr) {
+    const [Y,M,D] = dateStr.split("-").map(Number);
+    const [h,m] = timeStr.split(":").map(Number);
+    return new Date(Y, M-1, D, h, m, 0);
+  }
+  const target = parseDT(CFG.date_gregorian, CFG.start_time);
+  const cdEl = document.getElementById("cd");
+  function tick() {
+    const now = new Date();
+    let diff = target - now;
+    if (diff <= 0) { cdEl.textContent = "It’s time 😏"; return; }
+    const s = Math.floor(diff/1000);
+    const dd = Math.floor(s/86400);
+    const hh = Math.floor((s%86400)/3600);
+    const mm = Math.floor((s%3600)/60);
+    const ss = s%60;
+    cdEl.textContent = `${dd}d • ${hh}h • ${mm}m • ${ss}s`;
+  }
+  tick(); setInterval(tick, 1000);
+
+  // Modal open/close
+  const modalWrap = document.getElementById("modalWrap");
+  let tries = 0;
+  const openModal = ()=> {
+    modalWrap.classList.remove("hidden");
+    document.getElementById("codeInput").value = "";
+    document.getElementById("codeInput").focus();
+    document.getElementById("err").classList.remove("show");
+    tries = 0;
+  };
+  const closeModal = ()=> modalWrap.classList.add("hidden");
+  document.getElementById("openModal").addEventListener("click", openModal);
+  document.getElementById("closeModal").addEventListener("click", closeModal);
+
+  // Unlock + hint
+  document.getElementById("unlock").addEventListener("click", ()=> {
+    const v = document.getElementById("codeInput").value.trim().toLowerCase();
+    if (v && v === CFG.secret_code.trim().toLowerCase()) {
+      closeModal();
+      document.getElementById("reveal").classList.remove("hidden");
+      spawnHeart(14);
+      toast("Unlocked. Welcome 💞");
+      window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+    } else {
+      tries++;
+      document.getElementById("err").classList.add("show");
+      spawnHeart(3);
+      if (tries >= 2) toast(`Hint: ${CFG.hint_after_two_fails}`);
+    }
+  });
+  document.getElementById("codeInput").addEventListener("keydown", (e)=> {
+    if (e.key === "Enter") document.getElementById("unlock").click();
+  });
+
+  // YES
+  document.getElementById("yesBtn").addEventListener("click", ()=> {
+    spawnHeart(22);
+    confetti(100);
+    toast("Deal ❤️");
+    navigator.clipboard?.writeText(CFG.accept_text).then(()=>toast("Copied ✅")).catch(()=>{});
+  });
+
+  // Runaway NO
+  const noBtn = document.getElementById("noBtn");
+  const wrap = noBtn.parentElement;
+  function moveNo() {
+    const w = wrap.clientWidth - noBtn.offsetWidth;
+    const h = wrap.clientHeight - noBtn.offsetHeight;
+    const x = Math.max(0, Math.random() * w);
+    const y = Math.max(0, Math.random() * h);
+    noBtn.style.right = (w - x) + "px";
+    noBtn.style.top = y + "px";
+  }
+  noBtn.addEventListener("mouseenter", moveNo);
+  noBtn.addEventListener("click", ()=> { moveNo(); toast("No is not an option 😄"); spawnHeart(6); });
+  setTimeout(moveNo, 300);
+
+  // Copy confirmation
+  document.getElementById("copyMsg").addEventListener("click", ()=> {
+    navigator.clipboard.writeText(CFG.accept_text).then(()=>toast("Copied ✅")).catch(()=>toast("Copy failed 😅"));
+  });
+
+  // Share to Telegram
+  const shareBtn = document.getElementById("shareTg");
+  if (CFG.enable_share_to_telegram) {
+    shareBtn.classList.remove("hidden");
+    shareBtn.addEventListener("click", () => {
+      const url = encodeURIComponent(window.location.href);
+      const text = encodeURIComponent(`Unlock code: ${CFG.secret_code} 💌`);
+      window.open(`https://t.me/share/url?url=${url}&text=${text}`, "_blank");
+    });
+  }
+
+  // QR (auto uses current page URL when hosted)
+  const qrBox = document.getElementById("qrBox");
+  if (CFG.show_qr_block && (location.protocol === "http:" || location.protocol === "https:")) {
+    const qrImg = document.getElementById("qrImg");
+    const qrCodeText = document.getElementById("qrCodeText");
+    qrCodeText.textContent = CFG.secret_code;
+    const encoded = encodeURIComponent(window.location.href);
+    qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encoded}`;
+    qrBox.classList.remove("hidden");
+  }
+
+  // ICS calendar file download
+  function toICSDate(dateStr, timeStr) {
+    const [Y,M,D] = dateStr.split("-").map(Number);
+    const [h,m] = timeStr.split(":").map(Number);
+    const pad = (n)=>String(n).padStart(2,"0");
+    return `${Y}${pad(M)}${pad(D)}T${pad(h)}${pad(m)}00`;
+  }
+
+  document.getElementById("addCal").addEventListener("click", ()=> {
+    const dtStart = toICSDate(CFG.date_gregorian, CFG.start_time);
+    const dtEnd = toICSDate(CFG.date_gregorian, CFG.end_time);
+    const uid = Math.random().toString(16).slice(2) + "@invite";
+    const ics =
+`BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Interactive Invite Template//EN
+CALSCALE:GREGORIAN
+BEGIN:VEVENT
+UID:${uid}
+DTSTAMP:${dtStart}
+DTSTART:${dtStart}
+DTEND:${dtEnd}
+SUMMARY:Special Date 💌
+LOCATION:${CFG.location_name} - ${CFG.address}
+DESCRIPTION:An invitation created with a fun interactive template.
+END:VEVENT
+END:VCALENDAR`;
+
+    const blob = new Blob([ics], {type: "text/calendar;charset=utf-8"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = "invite.ics";
+    document.body.appendChild(a); a.click(); a.remove();
+    URL.revokeObjectURL(url);
+    toast("Calendar file created 📅");
+  });
+</script>
+
+</body>
+</html>

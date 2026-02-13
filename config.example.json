@@ -1,0 +1,30 @@
+{
+  "partner_fullname": "Partner Name",
+  "partner_nickname": "My Valentine ❤️",
+  "your_name": "Your Name",
+
+  "date_label": "A Special Day",
+  "date_gregorian": "2026-02-14",
+  "start_time": "19:30",
+  "end_time": "22:30",
+
+  "location_name": "A Special Place",
+  "address": "City, Neighborhood, Landmark",
+
+  "secret_code": "LOVE2026",
+  "hint_after_two_fails": "Try something meaningful 😉",
+
+  "dress_code": "Anything — with a tiny touch of red 😉",
+
+  "plan": [
+    "19:30 — Meet & a tiny surprise 🎁",
+    "20:00 — Coffee / dinner 🍽️",
+    "21:15 — Walk & photos 📸",
+    "22:00 — Dessert 🍰"
+  ],
+
+  "accept_text": "YES ❤️ I’m in!",
+
+  "show_qr_block": true,
+  "enable_share_to_telegram": true
+}
