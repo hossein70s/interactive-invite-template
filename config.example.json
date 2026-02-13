@@ -26,5 +26,7 @@
   "accept_text": "YES ❤️ I’m in!",
 
   "show_qr_block": true,
+  "public_url_for_qr": "https://hossein70s.github.io/interactive-invite-template/",
   "enable_share_to_telegram": true
 }
+
